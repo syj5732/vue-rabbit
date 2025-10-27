@@ -2,8 +2,8 @@
 <template>
     <LayoutNav/>
     <LayoutHeader/>
-    <LayoutFooter/>
     <router-view/>
+    <LayoutFooter/>
 </template>
 <script setup>
 import LayoutFooter from './components/LayoutFooter.vue';
