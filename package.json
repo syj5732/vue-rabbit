@@ -13,6 +13,7 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
+    "@vueuse/core": "^14.0.0",
     "axios": "^1.12.2",
     "element-plus": "^2.11.5",
     "pinia": "^3.0.3",
