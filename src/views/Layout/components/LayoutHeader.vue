@@ -1,17 +1,6 @@
 <script setup>
-import { getCategoryAPI } from '@/apis/Layout';
-import { onMounted,ref } from 'vue';
-
-const categoryList = ref([])
-const getCategory=async()=>{
-    const res=await getCategoryAPI()
-    categoryList.value=res.result
-}
-
-//onMounted用于在组件挂载完成后执行代码的生命周期钩子，常用于初始化操作
-//onMounted的参数必须是一个函数，最常见的就是箭头函数
-onMounted(()=>getCategory())
-
+import { useCategoryStore } from '@/stores/category';
+const categoryStore=useCategoryStore()
 </script>
 <template>
     <header class="app-header">
@@ -20,7 +9,7 @@ onMounted(()=>getCategory())
                 <RouterLink to="/">小兔鲜</RouterLink>
             </h1>
             <ul class="app-header-nav">
-                <li class="home" v-for="value in categoryList" :key="value.id">
+                <li class="home" v-for="value in categoryStore.categoryList" :key="value.id">
                     <RouterLink to="/">{{ value.name }}</RouterLink>
                 </li>
             </ul>
