@@ -5,14 +5,20 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { getBannerAPI } from '@/apis/home';
 import GoodsItem from '../Home/GoodsItem.vue';
-//获取面包屑导航数据
+import { onBeforeRouteUpdate } from 'vue-router';
+//获取数据
 const categoryData = ref({})
 const route = useRoute()
-const getCategory = async () => {
-  const res = await getCategoryAPI(route.params.id)
+//直接使用route.params.id会有异步问题，可能导致更新延迟
+const getCategory = async (id=route.params.id) => {
+  const res = await getCategoryAPI(id)
   categoryData.value = res.result
 }
 onMounted(() => getCategory())
+//路由变化时重新获取数据
+onBeforeRouteUpdate((to)=>{
+  getCategory(to.params.id)
+})
 //获取banner数据
 const bannerList = ref([])
 const getBanner = async () => {
