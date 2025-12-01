@@ -1,15 +1,25 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import {getCategoryAPI} from '@/apis/category'
+import { getCategoryAPI } from '@/apis/category'
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-const categoryData=ref({})
-const route=useRoute()
-const getCategory=async()=>{
-    const res=await getCategoryAPI(route.params.id)
-    categoryData.value=res.result
+import { getBannerAPI } from '@/apis/home';
+//获取面包屑导航数据
+const categoryData = ref({})
+const route = useRoute()
+const getCategory = async () => {
+  const res = await getCategoryAPI(route.params.id)
+  categoryData.value = res.result
 }
-onMounted(()=>getCategory())
+onMounted(() => getCategory())
+//获取banner数据
+const bannerList = ref([])
+const getBanner = async () => {
+  const optipn={distrubutionSite:'2'}
+  const res = await getBannerAPI(optipn)
+  bannerList.value = res.result
+}
+onMounted(() => getBanner())
 </script>
 
 <template>
@@ -19,10 +29,18 @@ onMounted(()=>getCategory())
       <div class="bread-container">
         <!-- 面包屑符号 -->
         <el-breadcrumb separator=">">
-            <!-- :to="{ path: '/' }"表示点击首页可以跳转到此路径 -->
+          <!-- :to="{ path: '/' }"表示点击首页可以跳转到此路径 -->
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>{{categoryData.name}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ categoryData.name }}</el-breadcrumb-item>
         </el-breadcrumb>
+      </div>
+      <!-- 轮播图 -->
+      <div class="home-banner">
+        <el-carousel height="500px">
+          <el-carousel-item v-for="item in bannerList" :key="item.id">
+            <img :src="item.imgUrl" alt="">
+          </el-carousel-item>
+        </el-carousel>
       </div>
     </div>
   </div>
@@ -30,6 +48,17 @@ onMounted(()=>getCategory())
 
 
 <style scoped lang="scss">
+.home-banner {
+  width: 1240px;
+  height: 500px;
+  margin: 0 auto;
+
+  img {
+    width: 100%;
+    height: 500px;
+  }
+}
+
 .top-category {
   h3 {
     font-size: 28px;

@@ -1,8 +1,14 @@
 import httpInstance from "@/utils/http";
 //获取banner
-export function getBannerAPI(){
+export function getBannerAPI(option={}){//option={}默认值为{}
+  //解构语法{ distributionSite = '1' }表示：从 options 对象中提取 distributionSite 属性时：如果 options 中有这个属性，就用它的值；如果 options 中没有这个属性（或属性值为 undefined），就用默认值 '1'。
+    const {distrubutionSite='1'}=option
     return httpInstance({
-        url:'/home/banner'
+        url:'/home/banner',
+        params:{
+          //命名与赋值必须与后端接口参数保持一致
+          distrubutionSite
+        }
     })
 }
 /**
