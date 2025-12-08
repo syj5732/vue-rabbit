@@ -1,19 +1,34 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import {getCategoryFilterAPI} from '@/apis/category'
+import { getCategoryFilterAPI, getSubCategoryAPI } from '@/apis/category'
 import { onBeforeRouteUpdate, useRoute } from 'vue-router'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
-const filterData=ref({})
-const route=useRoute()
-const getCategoryData=async(id=route.params.id)=>{
-  const res=await getCategoryFilterAPI(id)
-  filterData.value=res.result
+import GoodsItem from '../Home/GoodsItem.vue'
+const filterData = ref({})
+const route = useRoute()
+const getCategoryData = async (id = route.params.id) => {
+  const res = await getCategoryFilterAPI(id)
+  filterData.value = res.result
 }
-onMounted(()=>getCategoryData())
-onBeforeRouteUpdate((to)=>{
+onMounted(() => getCategoryData())
+onBeforeRouteUpdate((to) => {
   getCategoryData(to.params.id)
 })
+
+// 获取基础列表数据渲染
+const goodList = ref([])
+const reqData = ref({
+  categoryId: route.params.id,
+  page: 1,
+  pageSize: 20,
+  sortField: 'publishTime'
+})
+const getGoodList = async () => {
+  const res=await getSubCategoryAPI(reqData.value)
+  goodList.value=res.result.items
+}
+onMounted(()=>getGoodList())
 </script>
 
 <template>
@@ -22,9 +37,9 @@ onBeforeRouteUpdate((to)=>{
     <div class="bread-container">
       <el-breadcrumb separator=">">
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ path: `/category/${filterData.parentId}` }">{{filterData.parentName}}
+        <el-breadcrumb-item :to="{ path: `/category/${filterData.parentId}` }">{{ filterData.parentName }}
         </el-breadcrumb-item>
-        <el-breadcrumb-item>{{filterData.name}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{ filterData.name }}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="sub-container">
@@ -34,7 +49,8 @@ onBeforeRouteUpdate((to)=>{
         <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
       <div class="body">
-         <!-- 商品列表-->
+        <!-- 商品列表-->
+         <GoodsItem v-for="goods in goodList" :goods="goods" :key="goods.id"></GoodsItem>
       </div>
     </div>
   </div>
